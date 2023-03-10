@@ -1,12 +1,36 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.views import APIView 
+from rest_framework import viewsets
+from rest_framework import generics
+from django.contrib.auth.models import User
+from rest_framework import permissions
 
-# Create your views here.
-# def home(request,dish):
-#     items={
-#         'falafel':"Falafel is a deep-fried ball or patty-shaped fritter in Middle Eastern cuisine made from ground chickpeas, broad beans, or both. "
-#     }
-#     description=items[dish]
-#     return HttpResponse('<h2> {dish} </h2>',description)
-def index(request):
-    return render(request,'index.html',{})
+from  .models import Booking,MenuItem
+from .serializers import BookingSerializer,MenuItemSerializer,UserSerializer
+
+class BookingViewSet(viewsets.ModelViewSet):
+     queryset=Booking.objects.all()
+     serializer_class=BookingSerializer
+
+
+
+# def index(request):
+#     return render(request,'index.html',{})
+
+
+    
+class SingleMenuItemView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):  
+        queryset = MenuItem.objects.all()
+        serializer_class = MenuItemSerializer
+        
+class MenuItem(generics.ListCreateAPIView):
+    queryset=MenuItem.objects.all()
+    serializer_class=MenuItemSerializer
+
+class UserViewSet(viewsets.ModelViewSet):
+      queryset=User.objects.all()
+      serializer_class=UserSerializer
+      permission_classes=[permissions.IsAuthenticated]
